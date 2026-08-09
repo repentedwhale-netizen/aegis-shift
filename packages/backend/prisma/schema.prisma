@@ -1,0 +1,111 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─── Staff / Healthcare Workers ────────────────────────────────────
+
+model Staff {
+  id            String   @id @default(uuid())
+  name          String
+  email         String?
+  role          String   // e.g. "ICU Nurse"
+  department    String   // e.g. "ICU"
+  isActive      Boolean  @default(true)
+  totalShifts   Int      @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  shifts        Shift[]
+  credentials   Credential[]
+  disputes      Dispute[]
+
+  @@map("staff")
+}
+
+// ─── Shifts ────────────────────────────────────────────────────────
+
+model Shift {
+  id               String    @id @default(uuid())
+  staffId          String
+  staff            Staff     @relation(fields: [staffId], references: [id])
+  role             String
+  department       String
+  startedAt        DateTime
+  completedAt      DateTime?
+  status           String    @default("scheduled") // scheduled|active|completed|cancelled|disputed
+  metadata         Json?
+
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  disputes         Dispute[]
+
+  @@index([staffId])
+  @@index([status])
+  @@map("shifts")
+}
+
+// ─── Credentials ───────────────────────────────────────────────────
+
+model Credential {
+  id               String    @id @default(uuid())
+  staffId          String
+  staff            Staff     @relation(fields: [staffId], references: [id])
+  credentialType   String    // medical_license, board_certification, etc.
+  issuedAt         DateTime  @default(now())
+  expiresAt        DateTime?
+  metadata         Json
+  revoked          Boolean   @default(false)
+
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  @@index([staffId])
+  @@index([credentialType])
+  @@map("credentials")
+}
+
+// ─── Disputes ──────────────────────────────────────────────────────
+
+model Dispute {
+  id                  String    @id @default(uuid())
+  shiftId             String
+  shift               Shift     @relation(fields: [shiftId], references: [id])
+  staffId             String
+  staff               Staff     @relation(fields: [staffId], references: [id])
+  reason              String
+  status              String    @default("active") // active|ai_resolved|executed|overridden|cancelled
+  proposedResolution  String?   // pay_facility|pay_staff|split_50_50|custom
+  resolution          String?
+  evidence            String?
+  resolvedAt          DateTime?
+
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+
+  @@index([shiftId])
+  @@index([staffId])
+  @@index([status])
+  @@map("disputes")
+}
+
+// ─── Audit Log ─────────────────────────────────────────────────────
+
+model AuditLog {
+  id          String   @id @default(uuid())
+  action      String
+  entity      String
+  entityId    String
+  actor       String
+  details     String?
+  createdAt   DateTime @default(now())
+
+  @@index([entity, entityId])
+  @@index([createdAt])
+  @@map("audit_logs")
+}

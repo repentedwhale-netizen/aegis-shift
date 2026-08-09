@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aegis Shift — Backend API Demo</title>
+<style>
+  :root {
+    --bg: #0f172a;
+    --card: #1e293b;
+    --border: #334155;
+    --accent: #38bdf8;
+    --accent2: #818cf8;
+    --green: #4ade80;
+    --yellow: #facc15;
+    --red: #f87171;
+    --text: #e2e8f0;
+    --text-muted: #94a3b8;
+    --code-bg: #0f172a;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    padding: 2rem;
+  }
+  .header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+    padding: 2rem;
+    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+  }
+  .header h1 {
+    font-size: 2rem;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 0.5rem;
+  }
+  .header .meta {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+  }
+  .badge {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 99px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin: 0 4px;
+  }
+  .badge-green { background: rgba(74,222,128,0.15); color: var(--green); }
+  .badge-blue { background: rgba(56,189,248,0.15); color: var(--accent); }
+  .badge-yellow { background: rgba(250,204,21,0.15); color: var(--yellow); }
+  .badge-red { background: rgba(248,113,113,0.15); color: var(--red); }
+
+  .grid { display: grid; gap: 1.5rem; }
+  .grid-2 { grid-template-columns: repeat(auto-fit, minmax(480px, 1fr)); }
+  .grid-3 { grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); }
+  .grid-1 { grid-template-columns: 1fr; }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .card-header {
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .card-header h3 {
+    font-size: 0.95rem;
+    font-weight: 600;
+  }
+  .method {
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 4px;
+    text-transform: uppercase;
+  }
+  .method-get { background: rgba(74,222,128,0.2); color: var(--green); }
+  .method-post { background: rgba(56,189,248,0.2); color: var(--accent); }
+  .endpoint {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.8rem;
+    color: var(--accent2);
+    margin-left: 8px;
+  }
+  .card-body {
+    padding: 1.25rem;
+  }
+  pre {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.78rem;
+    line-height: 1.5;
+    overflow-x: auto;
+    color: var(--text);
+    margin-bottom: 0.5rem;
+  }
+  pre .key { color: #93c5fd; }
+  pre .str { color: #86efac; }
+  pre .num { color: #fde68a; }
+  pre .bool { color: #c4b5fd; }
+  pre .null { color: #64748b; }
+  pre .bracket { color: #64748b; }
+
+  .stats-row {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .stat {
+    flex: 1;
+    min-width: 120px;
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem;
+    text-align: center;
+  }
+  .stat .value {
+    font-size: 1.8rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .stat .label {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-top: 0.25rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .ws-event {
+    display: flex;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--border);
+    align-items: flex-start;
+  }
+  .ws-event:last-child { border-bottom: none; }
+  .ws-time {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+    min-width: 75px;
+  }
+  .ws-type {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+  }
+  .ws-type-shift { background: rgba(56,189,248,0.2); color: var(--accent); }
+  .ws-type-credential { background: rgba(129,140,248,0.2); color: var(--accent2); }
+  .ws-type-market { background: rgba(250,204,21,0.2); color: var(--yellow); }
+  .ws-type-dispute { background: rgba(248,113,113,0.2); color: var(--red); }
+  .ws-payload {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.73rem;
+    color: var(--text-muted);
+    flex: 1;
+  }
+
+  .table-wrap {
+    overflow-x: auto;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.8rem;
+  }
+  th {
+    background: var(--code-bg);
+    padding: 0.6rem 0.8rem;
+    text-align: left;
+    font-weight: 600;
+    color: var(--accent);
+    border-bottom: 2px solid var(--border);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  td {
+    padding: 0.5rem 0.8rem;
+    border-bottom: 1px solid var(--border);
+    font-family: 'Fira Code', monospace;
+    font-size: 0.75rem;
+  }
+  tr:hover { background: rgba(56,189,248,0.03); }
+
+  .tabs {
+    display: flex;
+    gap: 0;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .tab {
+    padding: 0.6rem 1.25rem;
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 0.85rem;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+  }
+  .tab.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+  .tab:hover { color: var(--text); }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  .highlight-row {
+    background: rgba(56,189,248,0.05);
+    border-left: 3px solid var(--accent);
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Aegis Shift — Backend API Demo</h1>
+  <p class="meta">
+    <span class="badge badge-green">v0.1.0</span>
+    <span class="badge badge-blue">Base Sepolia</span>
+    <span class="badge badge-yellow">Metamorph 2.0</span>
+  </p>
+  <p class="meta" style="margin-top:0.5rem">25+ tRPC procedures · WebSocket real-time · Prisma + PostgreSQL · AI shift matching</p>
+</div>
+
+<!-- Dashboard Stats -->
+<div class="grid grid-3" style="margin-bottom:1.5rem">
+  <div class="card">
+    <div class="card-header"><h3>analytics.dashboard</h3><span class="method method-get">QUERY</span><span class="endpoint">trpc/analytics.dashboard</span></div>
+    <div class="card-body">
+      <div class="stats-row">
+        <div class="stat"><div class="value">24</div><div class="label">Active Staff</div></div>
+        <div class="stat"><div class="value">12</div><div class="label">Active Shifts</div></div>
+        <div class="stat"><div class="value">2</div><div class="label">Open Markets</div></div>
+        <div class="stat"><div class="value">1</div><div class="label">Disputes</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-header"><h3>health</h3><span class="method method-get">QUERY</span><span class="endpoint">trpc/health</span></div>
+    <div class="card-body">
+      <pre>{
+<span class="bracket">{</span> <span class="key">"ok"</span>: <span class="bool">true</span>,
+  <span class="key">"uptime"</span>: <span class="num">1347.82</span>,
+  <span class="key">"timestamp"</span>: <span class="num">1754652308000</span>,
+  <span class="key">"version"</span>: <span class="str">"0.1.0"</span> <span class="bracket">}</span>
+}</pre>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-header"><h3>shifts.stats</h3><span class="method method-get">QUERY</span><span class="endpoint">trpc/shifts.stats</span></div>
+    <div class="card-body">
+      <div class="stats-row">
+        <div class="stat"><div class="value">43</div><div class="label">Total Shifts</div></div>
+        <div class="stat"><div class="value">28</div><div class="label">Completed</div></div>
+        <div class="stat"><div class="value">93%</div><div class="label">Rate</div></div>
+        <div class="stat"><div class="value">8.4h</div><div class="label">Avg Duration</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Tabs -->
+<div class="tabs">
+  <button class="tab active" onclick="switchTab('shifts')">Shifts API</button>
+  <button class="tab" onclick="switchTab('staff')">Staff API</button>
+  <button class="tab" onclick="switchTab('credentials')">Credentials API</button>
+  <button class="tab" onclick="switchTab('markets')">Markets API</button>
+  <button class="tab" onclick="switchTab('disputes')">Disputes API</button>
+  <button class="tab" onclick="switchTab('ai')">AI Matching</button>
+  <button class="tab" onclick="switchTab('ws')">WebSocket Events</button>
+</div>
+
+<!-- SHIFTS -->
+<div class="tab-content active" id="tab-shifts">
+  <div class="grid grid-1">
+    <div class="card">
+      <div class="card-header"><h3>shifts.list</h3><span class="method method-get">QUERY</span><span class="endpoint">trpc/shifts.list?limit=3</span></div>
+      <div class="card-body">
+        <div class="table-wrap">
+          <table>
+            <tr><th>ID</th><th>Staff</th><th>Role</th><th>Dept</th><th>Status</th><th>Started</th><th>Tx</th></tr>
+            <tr class="highlight-row">
+              <td>42</td><td>Dr. Sarah Chen</td><td>ER Physician</td><td>Emergency</td>
+              <td><span class="badge badge-green">active</span></td>
+              <td>08-08 06:00</td>
+              <td style="font-size:0.65rem">0x9a8b...1234</td>
+            </tr>
+            <tr>
+              <td>41</td><td>James Okafor, RN</td><td>ICU Nurse</td><td>ICU</td>
+              <td><span class="badge badge-blue">completed</span></td>
+              <td>08-07 22:00</td>
+              <td style="font-size:0.65rem">0x8a7b...8a7b</td>
+            </tr>
+            <tr>
+              <td>40</td><td>Dr. Amina Yusuf</td><td>Surgeon</td><td>Surgery</td>
+              <td><span class="badge badge-yellow">scheduled</span></td>
+              <td>08-08 08:00</td>
+              <td><em style="font-size:0.65rem">pending</em></td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- STAFF -->
+<div class="tab-content" id="tab-staff">
+  <div class="grid grid-1">
+    <div class="card">
+      <div class="card-header"><h3>staff.list</h3><span class="method method-get">QUERY</span><span class="endpoint">trpc/staff.list?limit=3</span></div>
+      <div class="card-body">
+        <div class="table-wrap">
+          <table>
+            <tr><th>Name</th><th>Role</th><th>Department</th><th>Address</th><th>Shifts</th><th>Active</th></tr>
+            <tr><td>Dr. Sarah Chen</td><td>ER Physician</td><td>Emergency</td><td style="font-size:0.65rem">0x8F4e...EF01</td><td>142</td><td><span class="badge badge-green">✓</span></td></tr>
+            <tr><td>James Okafor, RN</td><td>ICU Nurse</td><td>ICU</td><td style="font-size:0.65rem">0x1A2B...ef02</td><td>98</td><td><span class="badge badge-green">✓</span></td></tr>
+            <tr><td>Dr. Amina Yusuf</td><td>Surgeon</td><td>Surgery</td><td style="font-size:0.65rem">0xABCD...ef03</td><td>215</td><td><span class="badge badge-green">✓</span></td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CREDENTIALS -->
+<div class="tab-content" id="tab-credentials">
+  <div class="grid grid-1">
+    <div class="card">
+      <div class="card-header"><h3>credentials.verify</h3><span class="method method-get">QUERY</span><span class="endpoint">trpc/credentials.verify</span></div>
+      <div class="card-body">
+        <pre>{
+  <span class="key">"valid"</span>: <span class="bool">true</span>,
+  <span class="key">"credential"</span>: <span class="bracket">{</span>
+    <span class="key">"credentialHash"</span>: <span class="str">"0x4e3a2b1c0d9e8f7a6b5c4d3e2f1a0b9c8d7e6f5a"</span>,
+    <span class="key">"holderAddress"</span>:  <span class="str">"0x8F4e...EF01"</span>,
+    <span class="key">"credentialType"</span>:  <span class="str">"board_certification"</span>,
+    <span class="key">"issuerAddress"</span>:   <span class="str">"0x1111...0000"</span>, <span class="comment">// Medical Board</span>
+    <span class="key">"issuedAt"</span>:        <span class="str">"2025-03-15T00:00:00Z"</span>,
+    <span class="key">"expiresAt"</span>:       <span class="str">"2027-03-15T00:00:00Z"</span>,
+    <span class="key">"revoked"</span>:         <span class="bool">false</span>,
+    <span class="key">"metadataURI"</span>:      <span class="str">"ipfs://QmCredential123/emergency-medicine-board-cert"</span>
+  <span class="bracket">}</span>
+}</pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MARKETS -->
+<div class="tab-content" id="tab-markets">
+  <div class="grid grid-1">
+    <div class="card">
+      <div class="card-header"><h3>markets.list</h3><span class="method method-get">QUERY</span><span class="endpoint">trpc/markets.list</span></div>
+      <div class="card-body">
+        <div class="table-wrap">
+          <table>
+            <tr><th>ID</th><th>Question</th><th>YES shares</th><th>NO shares</th><th>Odds (YES)</th><th>Status</th></tr>
+            <tr>
+              <td>1</td><td>Will ER exceed 200 visits on Aug 15?</td>
+              <td>2.50 ETH</td><td>1.50 ETH</td>
+              <td><strong style="color:var(--green)">62.5%</strong></td>
+              <td><span class="badge badge-green">trading</span></td>
+            </tr>
+            <tr>
+              <td>2</td><td>Will Dr. Yusuf complete 50 shifts by Sep 1?</td>
+              <td>5.00 ETH</td><td>1.00 ETH</td>
+              <td><strong style="color:var(--green)">83.3%</strong></td>
+              <td><span class="badge badge-green">trading</span></td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- DISPUTES -->
+<div class="tab-content" id="tab-disputes">
+  <div class="grid grid-1">
+    <div class="card">
+      <div class="card-header"><h3>disputes.list</h3><span class="method method-get">QUERY</span><span class="endpoint">trpc/disputes.list</span></div>
+      <div class="card-body">
+        <pre>{
+  <span class="key">"disputeId"</span>: <span class="num">1</span>,
+  <span class="key">"shiftId"</span>: <span class="num">38</span>,
+  <span class="key">"facilityAddress"</span>: <span class="str">"0x9999...0000"</span>,
+  <span class="key">"staffAddress"</span>:   <span class="str">"0x8F4e...EF01"</span>, <span class="comment">// Dr. Sarah Chen</span>
+  <span class="key">"escrowAmount"</span>:    <span class="str">"0.50 ETH"</span>,
+  <span class="key">"tokenAddress"</span>:    <span class="str">"0xEeee...EEeE"</span>, <span class="comment">// Native ETH</span>
+  <span class="key">"reason"</span>:    <span class="str">"Shift duration exceeded scheduled time by 3 hours due to emergency intake surge. Overtime compensation disputed."</span>,
+  <span class="key">"status"</span>:     <span class="str">"active"</span>,
+  <span class="key">"evidence"</span>:   <span class="str">"ipfs://QmEvidence123/shift-38-overtime-logs"</span>,
+  <span class="key">"createdAt"</span>:  <span class="str">"2026-08-07T14:30:00Z"</span>
+}</pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- AI MATCHING -->
+<div class="tab-content" id="tab-ai">
+  <div class="grid grid-1">
+    <div class="card">
+      <div class="card-header"><h3>ai.matchShifts</h3><span class="method method-post">MUTATION</span><span class="endpoint">trpc/ai.matchShifts</span></div>
+      <div class="card-body">
+        <p style="color:var(--text-muted);margin-bottom:1rem;font-size:0.85rem">
+          Input: <code>{"department": "Emergency", "date": "2026-08-09", "shiftCount": 3}</code>
+        </p>
+        <pre>{
+  <span class="key">"totalScore"</span>: <span class="num">0.913</span>,
+  <span class="key">"unmetDemand"</span>: <span class="num">0</span>,
+  <span class="key">"assignments"</span>: [
+    {
+      <span class="key">"staffName"</span>:    <span class="str">"Dr. Sarah Chen"</span>,
+      <span class="key">"role"</span>:         <span class="str">"ER Physician"</span>,
+      <span class="key">"department"</span>:   <span class="str">"Emergency"</span>,
+      <span class="key">"startTime"</span>:    <span class="str">"2026-08-09T06:00:00Z"</span>,
+      <span class="key">"endTime"</span>:      <span class="str">"2026-08-09T14:00:00Z"</span>,
+      <span class="key">"optimizationScore"</span>: <span class="num">0.94</span>
+    },
+    {
+      <span class="key">"staffName"</span>:    <span class="str">"James Okafor, RN"</span>,
+      <span class="key">"role"</span>:         <span class="str">"ICU Nurse"</span>,
+      <span class="key">"optimizationScore"</span>: <span class="num">0.89</span>
+    },
+    {
+      <span class="key">"staffName"</span>:    <span class="str">"Dr. Amina Yusuf"</span>,
+      <span class="key">"role"</span>:         <span class="str">"Surgeon"</span>,
+      <span class="key">"optimizationScore"</span>: <span class="num">0.91</span>
+    }
+  ]
+}</pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- WEBSOCKET EVENTS -->
+<div class="tab-content" id="tab-ws">
+  <div class="card">
+    <div class="card-header"><h3>WebSocket Event Stream</h3><span class="method method-get">WS</span><span class="endpoint">ws://host:3001/ws</span></div>
+    <div class="card-body" style="padding:0">
+      <div class="ws-event">
+        <span class="ws-time">06:00:00</span>
+        <span class="ws-type ws-type-shift">shift:created</span>
+        <span class="ws-payload">shiftId=42 · Dr. Sarah Chen · ER Physician · Emergency · tx:0x9a8b...</span>
+      </div>
+      <div class="ws-event">
+        <span class="ws-time">05:00:00</span>
+        <span class="ws-type ws-type-credential">credential:issued</span>
+        <span class="ws-payload">board_certification → 0x8F4e...EF01 · expires 2027-03-15</span>
+      </div>
+      <div class="ws-event">
+        <span class="ws-time">03:00:00</span>
+        <span class="ws-type ws-type-market">market:created</span>
+        <span class="ws-payload">marketId=1 · "Will ER exceed 200 visits on Aug 15?" · fee=100bps</span>
+      </div>
+      <div class="ws-event">
+        <span class="ws-time">04:00:00</span>
+        <span class="ws-type ws-type-market">market:trade</span>
+        <span class="ws-payload">marketId=1 · trader=0xABCD...ef03 · BUY YES · 1.0 ETH · pool now 2.5Y/1.5N</span>
+      </div>
+      <div class="ws-event">
+        <span class="ws-time">T-2:30</span>
+        <span class="ws-type ws-type-dispute">dispute:filed</span>
+        <span class="ws-payload">disputeId=1 · shiftId=38 · 0.5 ETH escrow · OT compensation dispute</span>
+      </div>
+      <div class="ws-event">
+        <span class="ws-time">06:05:00</span>
+        <span class="ws-type ws-type-shift">shift:completed</span>
+        <span class="ws-payload">shiftId=41 · James Okafor, RN · ICU · 8.0h · tx:0x8a7b...</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div style="text-align:center; margin-top:2rem; padding:1.5rem; color:var(--text-muted); font-size:0.8rem;">
+  <p>Aegis Shift · Metamorph 2.0 Hackathon · Built with tRPC · WebSocket · Prisma · LangChain · Base Sepolia</p>
+  <p style="margin-top:0.3rem">Contracts: ShiftNFT · PredictionMarketAMM · CredentialRegistry · DisputeArbitrator — <span class="badge badge-green">32/32 tests passing</span></p>
+</div>
+
+<script>
+function switchTab(name) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  document.querySelector(`[onclick="switchTab('${name}')"]`).classList.add('active');
+  document.getElementById('tab-' + name).classList.add('active');
+}
+</script>
+
+</body>
+</html>

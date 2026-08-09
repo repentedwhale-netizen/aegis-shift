@@ -1,0 +1,23 @@
+{
+  "name": "aegis-shift",
+  "version": "0.1.0",
+  "private": true,
+  "description": "AI-Powered Healthcare Shift Management with Multi-Agent LangChain — AI Builders Hackathon 2026",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "test": "turbo run test",
+    "lint": "turbo run lint",
+    "format": "prettier --write \"**/*.{ts,tsx,js,json,md}\"",
+    "agent:dev": "cd packages/agent-layer && npm run dev",
+    "agent:test": "cd packages/agent-layer && npm run test"
+  },
+  "devDependencies": {
+    "@trpc/server": "^10.45.4",
+    "prettier": "^3.2.5",
+    "turbo": "^2.0.6"
+  }
+}

@@ -1,0 +1,21 @@
+node_modules/
+.turbo/
+dist/
+.next/
+out/
+.env
+.env.local
+.env.*.local
+*.log
+cache/
+broadcast/
+out/
+
+# Foundry
+packages/contracts/cache/
+packages/contracts/out/
+packages/contracts/lib/
+
+# Coverage
+coverage/
+lcov.info

@@ -1,0 +1,72 @@
+[
+  {
+    "type": "shift:created",
+    "payload": {
+      "shiftId": 42,
+      "staffAddress": "0x8F4e1A3B2c9D5E7F0123456789abcdefABCDEF01",
+      "staffName": "Dr. Sarah Chen",
+      "role": "ER Physician",
+      "department": "Emergency",
+      "startedAt": "2026-08-08T06:00:00.000Z",
+      "transactionHash": "0x9a8b7c6d5e4f3a2b1c0d9e8f7a6b5c4d3e2f1a0b9c8d7e6f5a4b3c2d1e0f1234"
+    },
+    "timestamp": 1754652000
+  },
+  {
+    "type": "credential:issued",
+    "payload": {
+      "credentialHash": "0x4e3a2b1c0d9e8f7a6b5c4d3e2f1a0b9c8d7e6f5a",
+      "holderAddress": "0x8F4e1A3B2c9D5E7F0123456789abcdefABCDEF01",
+      "credentialType": "board_certification",
+      "issuerAddress": "0x1111222233334444555566667777888899990000",
+      "expiresAt": "2027-03-15T00:00:00.000Z"
+    },
+    "timestamp": 1754640000
+  },
+  {
+    "type": "market:created",
+    "payload": {
+      "marketId": 1,
+      "question": "Will Metropolitan Hospital's ER exceed 200 patient visits on August 15, 2026?",
+      "closeTime": "2026-08-15T23:59:59.000Z",
+      "feeBasisPoints": 100
+    },
+    "timestamp": 1754632800
+  },
+  {
+    "type": "market:trade",
+    "payload": {
+      "marketId": 1,
+      "trader": "0xABCDEF0123456789abcdef0123456789abcdef03",
+      "isYes": true,
+      "collateralAmount": "1000000000000000000",
+      "yesShares": "2500000000000000000",
+      "noShares": "1500000000000000000"
+    },
+    "timestamp": 1754636400
+  },
+  {
+    "type": "dispute:filed",
+    "payload": {
+      "disputeId": 1,
+      "shiftId": 38,
+      "facilityAddress": "0x9999888877776666555544443333222211110000",
+      "staffAddress": "0x8F4e1A3B2c9D5E7F0123456789abcdefABCDEF01",
+      "escrowAmount": "500000000000000000",
+      "reason": "Shift duration exceeded scheduled time by 3 hours"
+    },
+    "timestamp": 1754610000
+  },
+  {
+    "type": "shift:completed",
+    "payload": {
+      "shiftId": 41,
+      "staffAddress": "0x1A2B3C4D5E6F7890ABCDEF0123456789abcdef02",
+      "staffName": "James Okafor, RN",
+      "department": "ICU",
+      "durationHours": 8.0,
+      "transactionHash": "0x8a7b6c5d4e3f2a1b0c9d8e7f6a5b4c3d2e1f0a9b8c7d6e5f4a3b2c1d0e9f8a7b"
+    },
+    "timestamp": 1754652300
+  }
+]

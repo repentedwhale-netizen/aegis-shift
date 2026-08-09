@@ -1,0 +1,247 @@
+{
+  "health": {
+    "ok": true,
+    "uptime": 1347.82,
+    "timestamp": 1754652308000,
+    "version": "0.1.0"
+  },
+
+  "shifts.list": {
+    "shifts": [
+      {
+        "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+        "shiftId": 42,
+        "tokenId": 7,
+        "staffAddress": "0x8F4e1A3B2c9D5E7F0123456789abcdefABCDEF01",
+        "staffName": "Dr. Sarah Chen",
+        "role": "ER Physician",
+        "department": "Emergency",
+        "startedAt": "2026-08-08T06:00:00.000Z",
+        "completedAt": null,
+        "status": "active",
+        "metadataURI": "ipfs://QmXmB7nVN7QdJq5Kp3mR8tW9xY2zA4bC6dE8fG0hI2jK4L/shift/42",
+        "transactionHash": "0x9a8b7c6d5e4f3a2b1c0d9e8f7a6b5c4d3e2f1a0b9c8d7e6f5a4b3c2d1e0f1234",
+        "createdAt": "2026-08-08T05:58:00.000Z",
+        "updatedAt": "2026-08-08T06:00:05.000Z"
+      },
+      {
+        "id": "b2c3d4e5-f6a7-8901-bcde-f12345678901",
+        "shiftId": 41,
+        "tokenId": 6,
+        "staffAddress": "0x1A2B3C4D5E6F7890ABCDEF0123456789abcdef02",
+        "staffName": "James Okafor, RN",
+        "role": "ICU Nurse",
+        "department": "ICU",
+        "startedAt": "2026-08-07T22:00:00.000Z",
+        "completedAt": "2026-08-08T06:00:00.000Z",
+        "status": "completed",
+        "metadataURI": "ipfs://QmXmB7nVN7QdJq5Kp3mR8tW9xY2zA4bC6dE8fG0hI2jK4L/shift/41",
+        "transactionHash": "0x8a7b6c5d4e3f2a1b0c9d8e7f6a5b4c3d2e1f0a9b8c7d6e5f4a3b2c1d0e9f8a7b",
+        "createdAt": "2026-08-07T21:55:00.000Z",
+        "updatedAt": "2026-08-08T06:02:30.000Z"
+      },
+      {
+        "id": "c3d4e5f6-a789-0123-cdef-123456789012",
+        "shiftId": 40,
+        "tokenId": null,
+        "staffAddress": "0xABCDEF0123456789abcdef0123456789abcdef03",
+        "staffName": "Dr. Amina Yusuf",
+        "role": "Surgeon",
+        "department": "Surgery",
+        "startedAt": "2026-08-08T08:00:00.000Z",
+        "completedAt": null,
+        "status": "scheduled",
+        "metadataURI": null,
+        "transactionHash": null,
+        "createdAt": "2026-08-07T18:30:00.000Z",
+        "updatedAt": "2026-08-07T18:30:00.000Z"
+      }
+    ],
+    "total": 43,
+    "limit": 50,
+    "offset": 0
+  },
+
+  "shifts.stats": {
+    "totalShifts": 43,
+    "activeShifts": 12,
+    "completedShifts": 28,
+    "cancelledShifts": 2,
+    "disputedShifts": 1,
+    "byDepartment": {
+      "Emergency": 15,
+      "ICU": 10,
+      "Surgery": 8,
+      "General Ward": 6,
+      "Radiology": 4
+    },
+    "averageShiftHours": 8.4,
+    "completionRate": 0.93
+  },
+
+  "staff.list": [
+    {
+      "id": "staff-001",
+      "address": "0x8F4e1A3B2c9D5E7F0123456789abcdefABCDEF01",
+      "name": "Dr. Sarah Chen",
+      "email": "sarah.chen@metropolitan-hospital.org",
+      "role": "ER Physician",
+      "department": "Emergency",
+      "isActive": true,
+      "totalShifts": 142,
+      "createdAt": "2025-11-15T00:00:00.000Z",
+      "updatedAt": "2026-08-08T06:00:00.000Z"
+    },
+    {
+      "id": "staff-002",
+      "address": "0x1A2B3C4D5E6F7890ABCDEF0123456789abcdef02",
+      "name": "James Okafor, RN",
+      "email": "j.okafor@metropolitan-hospital.org",
+      "role": "ICU Nurse",
+      "department": "ICU",
+      "isActive": true,
+      "totalShifts": 98,
+      "createdAt": "2025-12-01T00:00:00.000Z",
+      "updatedAt": "2026-08-08T06:02:00.000Z"
+    },
+    {
+      "id": "staff-003",
+      "address": "0xABCDEF0123456789abcdef0123456789abcdef03",
+      "name": "Dr. Amina Yusuf",
+      "email": "a.yusuf@metropolitan-hospital.org",
+      "role": "Surgeon",
+      "department": "Surgery",
+      "isActive": true,
+      "totalShifts": 215,
+      "createdAt": "2024-06-22T00:00:00.000Z",
+      "updatedAt": "2026-08-07T18:30:00.000Z"
+    }
+  ],
+
+  "credentials.verify": {
+    "valid": true,
+    "credential": {
+      "id": "cred-001",
+      "credentialHash": "0x4e3a2b1c0d9e8f7a6b5c4d3e2f1a0b9c8d7e6f5a",
+      "holderAddress": "0x8F4e1A3B2c9D5E7F0123456789abcdefABCDEF01",
+      "issuerAddress": "0x1111222233334444555566667777888899990000",
+      "credentialType": "board_certification",
+      "issuedAt": "2025-03-15T00:00:00.000Z",
+      "expiresAt": "2027-03-15T00:00:00.000Z",
+      "metadataURI": "ipfs://QmCredential123/emergency-medicine-board-cert",
+      "revoked": false,
+      "transactionHash": "0xc0ffee123456789abcdef0123456789abcdef0123456789abcdef01234567"
+    }
+  },
+
+  "markets.list": [
+    {
+      "id": "market-001",
+      "marketId": 1,
+      "question": "Will Metropolitan Hospital's ER exceed 200 patient visits on August 15, 2026?",
+      "closeTime": "2026-08-15T23:59:59.000Z",
+      "yesShares": "2500000000000000000",
+      "noShares": "1500000000000000000",
+      "totalLiquidity": "4000000000000000000",
+      "status": "trading",
+      "outcome": null,
+      "resolvedAt": null,
+      "feeBasisPoints": 100,
+      "transactionHash": "0xdef6789abcdef0123456789abcdef0123456789abcdef0123456789abc",
+      "createdAt": "2026-08-07T12:00:00.000Z",
+      "updatedAt": "2026-08-08T09:30:00.000Z",
+      "currentOdds": { "yes": 0.625, "no": 0.375 }
+    },
+    {
+      "id": "market-002",
+      "marketId": 2,
+      "question": "Will Dr. Amina Yusuf complete 50 more shifts before September 1, 2026?",
+      "closeTime": "2026-09-01T00:00:00.000Z",
+      "yesShares": "5000000000000000000",
+      "noShares": "1000000000000000000",
+      "totalLiquidity": "6000000000000000000",
+      "status": "trading",
+      "outcome": null,
+      "resolvedAt": null,
+      "feeBasisPoints": 100,
+      "transactionHash": "0x123456789abcdef0123456789abcdef0123456789abcdef0123456789a",
+      "createdAt": "2026-08-06T09:00:00.000Z",
+      "updatedAt": "2026-08-08T09:00:00.000Z",
+      "currentOdds": { "yes": 0.833, "no": 0.167 }
+    }
+  ],
+
+  "disputes.list": [
+    {
+      "id": "dispute-001",
+      "disputeId": 1,
+      "shiftId": 38,
+      "facilityAddress": "0x9999888877776666555544443333222211110000",
+      "staffAddress": "0x8F4e1A3B2c9D5E7F0123456789abcdefABCDEF01",
+      "escrowAmount": "500000000000000000",
+      "tokenAddress": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
+      "reason": "Shift duration exceeded scheduled time by 3 hours due to emergency intake surge. Overtime compensation disputed.",
+      "status": "active",
+      "proposedResolution": null,
+      "facilityPayout": null,
+      "staffPayout": null,
+      "evidence": "ipfs://QmEvidence123/shift-38-overtime-logs",
+      "createdAt": "2026-08-07T14:30:00.000Z",
+      "resolvedAt": null,
+      "transactionHash": "0xabc123def4567890123456789abcdef0123456789abcdef0123456789a"
+    }
+  ],
+
+  "analytics.dashboard": {
+    "shiftStats": {
+      "totalShifts": 43,
+      "activeShifts": 12,
+      "completedShifts": 28,
+      "disputedShifts": 1,
+      "byDepartment": {
+        "Emergency": 15,
+        "ICU": 10,
+        "Surgery": 8,
+        "General Ward": 6,
+        "Radiology": 4
+      }
+    },
+    "activeDisputes": 1,
+    "openMarkets": 2,
+    "staffCount": 24
+  },
+
+  "ai.matchShifts": {
+    "assignments": [
+      {
+        "staffAddress": "0x8F4e1A3B2c9D5E7F0123456789abcdefABCDEF01",
+        "staffName": "Dr. Sarah Chen",
+        "role": "ER Physician",
+        "department": "Emergency",
+        "startTime": "2026-08-09T06:00:00.000Z",
+        "endTime": "2026-08-09T14:00:00.000Z",
+        "optimizationScore": 0.94
+      },
+      {
+        "staffAddress": "0x1A2B3C4D5E6F7890ABCDEF0123456789abcdef02",
+        "staffName": "James Okafor, RN",
+        "role": "ICU Nurse",
+        "department": "ICU",
+        "startTime": "2026-08-09T06:00:00.000Z",
+        "endTime": "2026-08-09T14:00:00.000Z",
+        "optimizationScore": 0.89
+      },
+      {
+        "staffAddress": "0xABCDEF0123456789abcdef0123456789abcdef03",
+        "staffName": "Dr. Amina Yusuf",
+        "role": "Surgeon",
+        "department": "Surgery",
+        "startTime": "2026-08-09T08:00:00.000Z",
+        "endTime": "2026-08-09T16:00:00.000Z",
+        "optimizationScore": 0.91
+      }
+    ],
+    "totalScore": 0.913,
+    "unmetDemand": 0
+  }
+}
